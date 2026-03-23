@@ -43,8 +43,11 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 # ⚠️ В продакшене добавьте сюда ваш домен, например:
 #   ['autoservice.ru', 'www.autoservice.ru', '185.123.45.67']
 # -----------------------------------------------------------
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = [
+    'autoservice-production-91e0.up.railway.app',
+    'localhost',
+    '127.0.0.1',
+]
 
 # -----------------------------------------------------------
 # INSTALLED_APPS — список всех подключённых Django-приложений.
@@ -229,15 +232,11 @@ SIMPLE_JWT = {
 # ⚠️ В продакшене замените CORS_ALLOW_ALL_ORIGINS = False
 # и укажите конкретные домены в CORS_ALLOWED_ORIGINS
 # -----------------------------------------------------------
-CORS_ALLOW_ALL_ORIGINS = True  # Разрешить все источники (только для разработки!)
-
-# --- Для продакшена раскомментируйте и настройте: ---
-# CORS_ALLOW_ALL_ORIGINS = False
-# CORS_ALLOWED_ORIGINS = [
-#     'https://ВАШ_ДОМЕН.ru',       # ⚠️ Замените на реальный домен вашего сайта
-#     'http://localhost:3000',       # React при локальной разработке
-# ]
-
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    'https://meticulous-happiness-production-e35d.up.railway.app',
+    'http://localhost:3000',
+]
 
 # -----------------------------------------------------------
 # SECURITY — заголовки безопасности.
