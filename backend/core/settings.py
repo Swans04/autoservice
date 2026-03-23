@@ -244,14 +244,12 @@ CORS_ALLOWED_ORIGINS = [
 # В режиме разработки некоторые отключены (иначе мешают).
 # -----------------------------------------------------------
 if not DEBUG:
-    # Включать только в продакшене:
-    SECURE_BROWSER_XSS_FILTER = True          # Заголовок X-XSS-Protection
-    SECURE_CONTENT_TYPE_NOSNIFF = True         # Запрет MIME-сниффинга
-    X_FRAME_OPTIONS = 'DENY'                   # Запрет показа в <iframe>
-    SECURE_SSL_REDIRECT = True                 # Принудительно HTTPS
-    SESSION_COOKIE_SECURE = True               # Куки только по HTTPS
-    CSRF_COOKIE_SECURE = True                  # CSRF-куки только по HTTPS
-
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
 # -----------------------------------------------------------
 # LOGGING — настройки логирования ошибок и событий.
