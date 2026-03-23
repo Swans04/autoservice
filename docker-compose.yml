@@ -1,0 +1,125 @@
+# ========================================================
+#   ФАЙЛ: docker-compose.yml
+#   НАЗНАЧЕНИЕ: Запуск всего проекта одной командой.
+#   Поднимает 3 контейнера:
+#     db       — PostgreSQL база данных
+#     backend  — Django сервер (порт 8000)
+#     frontend — React приложение (порт 3000)
+#
+#   ЗАПУСК: docker-compose up --build
+#   ОСТАНОВКА: docker-compose down
+#   ⚠️ Требуется: Docker Desktop (https://docker.com/products/docker-desktop)
+# ========================================================
+
+version: '3.9'
+
+services:
+
+  # -----------------------------------------------------------
+  # БАЗА ДАННЫХ PostgreSQL
+  # Официальный образ postgres:15
+  # -----------------------------------------------------------
+  db:
+    image: postgres:15-alpine           # Лёгкая версия PostgreSQL 15
+    container_name: autoservice_db
+    restart: unless-stopped             # Перезапуск при падении
+
+    environment:
+      # ⚠️ ВСТАВЬТЕ СВОИ ЗНАЧЕНИЯ:
+      # Эти переменные создают базу данных при первом запуске.
+      # Запомните их — они нужны и для backend/settings.py
+      POSTGRES_DB:       autoservice_db     # Имя базы данных
+      POSTGRES_USER:     autoservice_user   # Имя пользователя PostgreSQL
+      POSTGRES_PASSWORD: ПРИДУМАЙТЕ_ПАРОЛЬ_И_ВСТАВЬТЕ_СЮДА  # ⚠️ Замените на реальный пароль!
+
+    volumes:
+      # Данные базы хранятся в именованном томе — не теряются при перезапуске
+      - postgres_data:/var/lib/postgresql/data
+
+    ports:
+      # Порт 5432 проброшен на хост — можно подключиться из pgAdmin
+      - "5432:5432"
+
+    healthcheck:
+      # Docker ждёт этот healthcheck перед запуском backend
+      test: ["CMD-SHELL", "pg_isready -U autoservice_user -d autoservice_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  # -----------------------------------------------------------
+  # BACKEND Django
+  # -----------------------------------------------------------
+  backend:
+    build:
+      context: ./backend               # Папка с Dockerfile
+      dockerfile: Dockerfile
+    container_name: autoservice_backend
+    restart: unless-stopped
+
+    environment:
+      # ⚠️ Эти значения должны совпадать с настройками БД выше!
+      DEBUG:         "True"
+      DJANGO_SECRET_KEY: СГЕНЕРИРУЙТЕ_КЛЮЧ    # ⚠️ см. комментарий в settings.py
+      DB_NAME:       autoservice_db
+      DB_USER:       autoservice_user
+      DB_PASSWORD:   ПРИДУМАЙТЕ_ПАРОЛЬ_И_ВСТАВЬТЕ_СЮДА  # ⚠️ Тот же пароль что выше
+      DB_HOST:       db                 # Имя сервиса = hostname в Docker сети
+      DB_PORT:       "5432"
+
+    volumes:
+      - ./backend:/app                  # Монтируем код — изменения применяются без пересборки
+      - media_files:/app/media          # Медиафайлы (фото сотрудников)
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      db:
+        condition: service_healthy      # Запускаем только когда БД готова
+
+    command: >
+      sh -c "
+        python manage.py migrate --noinput &&
+        python manage.py collectstatic --noinput &&
+        python manage.py runserver 0.0.0.0:8000
+      "
+      # migrate        — применяет миграции базы данных
+      # collectstatic  — собирает статические файлы
+      # runserver      — запускает сервер разработки (в продакшене замените на gunicorn)
+
+
+  # -----------------------------------------------------------
+  # FRONTEND React
+  # -----------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: autoservice_frontend
+    restart: unless-stopped
+
+    environment:
+      # ⚠️ URL вашего backend сервера.
+      # При локальной разработке в Docker оставьте как есть.
+      # В продакшене замените на реальный домен: https://api.ваш-домен.ru
+      REACT_APP_API_URL: http://localhost:8000/api
+
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules               # node_modules НЕ монтируем с хоста
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - backend
+
+
+# -----------------------------------------------------------
+# ИМЕНОВАННЫЕ ТОМА (данные сохраняются между перезапусками)
+# -----------------------------------------------------------
+volumes:
+  postgres_data:    # Данные PostgreSQL
+  media_files:      # Загружаемые медиафайлы

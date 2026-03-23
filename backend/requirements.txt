@@ -1,0 +1,29 @@
+# ========================================================
+#   ФАЙЛ: backend/requirements.txt
+#   НАЗНАЧЕНИЕ: Список Python-зависимостей проекта.
+#   Установка: pip install -r requirements.txt
+# ========================================================
+
+# Django — основной веб-фреймворк
+Django==4.2.7
+
+# Django REST Framework — инструмент для создания RESTful API
+djangorestframework==3.14.0
+
+# JWT-аутентификация для DRF
+djangorestframework-simplejwt==5.3.0
+
+# CORS-заголовки — разрешает React обращаться к Django с другого порта
+django-cors-headers==4.3.1
+
+# Драйвер PostgreSQL для Python
+psycopg2-binary==2.9.9
+
+# Pillow — нужен для поля ImageField (фото сотрудников)
+Pillow==10.1.0
+
+# Gunicorn — WSGI-сервер для продакшена (заменяет встроенный сервер Django)
+gunicorn==21.2.0
+
+# python-dotenv — загрузка переменных окружения из .env файла
+python-dotenv==1.0.0
