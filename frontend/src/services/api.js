@@ -24,7 +24,7 @@ import axios from 'axios';
 //     REACT_APP_API_URL=http://localhost:8000
 //   Тогда здесь будет: process.env.REACT_APP_API_URL
 // -----------------------------------------------------------
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://autoservice-production-91e0.up.railway.app';
 
 // -----------------------------------------------------------
 // Создаём экземпляр axios с базовыми настройками.
