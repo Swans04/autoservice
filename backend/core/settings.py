@@ -247,7 +247,10 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
+
+    # --- ВАЖНО: отключаем чтобы не было циклических редиректов ---
     SECURE_SSL_REDIRECT = False
+
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
 
