@@ -286,3 +286,8 @@ LOGGING = {
         },
     },
 }
+# Говорим Django доверять заголовку X-Forwarded-Proto от Railway
+# Без этого Django думает что запрос HTTP и редиректит на HTTPS бесконечно
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False
+USE_X_FORWARDED_HOST = True
