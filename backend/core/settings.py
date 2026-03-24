@@ -243,16 +243,6 @@ CORS_ALLOWED_ORIGINS = [
 # Защищают от XSS, кликджекинга и других атак.
 # В режиме разработки некоторые отключены (иначе мешают).
 # -----------------------------------------------------------
-if not DEBUG:
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
-
-    # --- ВАЖНО: отключаем чтобы не было циклических редиректов ---
-    SECURE_SSL_REDIRECT = False
-
-    SESSION_COOKIE_SECURE = False
-    CSRF_COOKIE_SECURE = False
 
 # -----------------------------------------------------------
 # LOGGING — настройки логирования ошибок и событий.
